@@ -21,7 +21,7 @@
       </template>
     </Sider>
     <Layout :class="rightSider">
-      <Header class="i-layout-header" :class="rightHeader">
+      <Header class="i-layout-header dark" :class="rightHeader">
         <i class="iconfont icon-collapsed" :class="rotateIcon" @click="collapsedSider"></i>
         <i class="iconfont icon-htmal5icon23 icon-reload" @click="reloadApp"></i>
         <Breadcrumb class="i-layout-header-breadcrumb">
@@ -32,7 +32,7 @@
         <div class="i-layout-header-right">
           <Dropdown @on-click="onClickUser">
             <a href="javascript:void(0)">
-              <Avatar style="background:#C6E2FF" icon="ios-person"></Avatar> Admin
+              <Avatar style="background-color: #87d068" icon="ios-person" /> Admin
               <Icon type="ios-arrow-down"></Icon>
             </a>
             <DropdownMenu slot="list">
@@ -271,6 +271,13 @@ export default {
 .i-layout-header-fix-collapse{position:fixed;top:0;right:0;left:80px;z-index:11;}
 .i-layout-header-breadcrumb{display:inline-block;}
 .i-layout-header-breadcrumb>span:last-child{font-weight:normal;}
+
+.i-layout-header.dark{background:linear-gradient(90deg,#1d42ab,#2173dc,#1e93ff);color:#fff;}
+.i-layout-header.dark .icon-collapsed{color:#fff;}
+.i-layout-header.dark .icon-reload{color:#fff;}
+.i-layout-header.dark .ivu-breadcrumb{color:rgba(255,255,255,.7);}
+.i-layout-header.dark .ivu-breadcrumb>span:last-child{color:#fff;}
+.i-layout-header.dark a{color:#fff;}
 
 .icon-collapsed{margin:0 15px;font-size:18px;position:relative;top:2px;cursor:pointer;color:#515a6e;}
 .icon-reload{margin-right:15px;font-size:18px;position:relative;top:2px;cursor:pointer;color:#515a6e;}

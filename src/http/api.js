@@ -2,4 +2,4 @@
 import { httpPost, httpGet } from './axios.js'
 
 
-export const apiOnLogin = prames => httpPost('', prames)   // 登录
+export const apiOnLogin = prames => httpPost('/v1/user/login', prames)   // 登录

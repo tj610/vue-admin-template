@@ -15,7 +15,8 @@
           </Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" size="large" long @click="$router.push('/dashboard/console')">登录</Button>
+          <!-- <Button type="primary" size="large" long @click="$router.push('/dashboard/console')">登录</Button> -->
+          <Button type="primary" size="large" long @click="onLogin">登录</Button>
         </FormItem>
       </Form>
     </div>
@@ -44,7 +45,7 @@ export default {
   mounted() {
   },
   methods: {
-    login() {
+    onLogin() {
       apiOnLogin(this.loginForm).then(res => {})
     }
   }
