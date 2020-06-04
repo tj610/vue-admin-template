@@ -3,7 +3,7 @@
     <Sider ref="leftSider" hide-trigger collapsible :width="256" :collapsed-width="80" v-model="isCollapsed" class="i-layout-sider-dark i-layout-sider-fix">
       <template v-if="!isCollapsed">
         <div class="i-layout-sider-logo"><img src="../assets/images/logo_w.png"></div>
-        <Menu theme="dark" accordion width="auto" :open-names="[curOpenName]" :active-name="curMenuName" @on-select="onSelectMenu">
+        <Menu theme="dark" accordion width="auto" :open-names="[curOpenName]" :active-name="curMenuName" @on-select="onSelectMenu" ref="leftMenu">
           <Submenu :name="item.name" v-for="(item,index) in menuList" :key="index">
             <template slot="title"><Icon :type="item.icon" />{{item.name}}</template>
             <MenuItem :name="menu.name" :to="menu.path" v-for="(menu,index) in item.submenu" :key="index">{{menu.name}}</MenuItem>
@@ -12,18 +12,10 @@
       </template>
       <template v-if="isCollapsed">
         <div class="i-layout-sider-logo" v-if="isCollapsed"><img src="../assets/images/logo_small.png" style="height:80%;margin-top:10px;"></div>
-        <Dropdown class="i-menu" placement="right-start">
-          <a href="javascript:void(0)"><Icon type="ios-paper" size="16" /></a>
+        <Dropdown class="i-menu" placement="right-start" v-for="(item,index) in menuList" :key="index">
+          <a href="javascript:void(0)"><Icon :type="item.icon" size="16" /></a>
           <DropdownMenu slot="list">
-            <DropdownItem>主控台</DropdownItem>
-            <DropdownItem>工作台</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Dropdown class="i-menu" placement="right-start">
-          <a href="javascript:void(0)"><Icon type="md-contacts" size="18" /></a>
-          <DropdownMenu slot="list">
-            <DropdownItem>用户列表</DropdownItem>
-            <DropdownItem>新增用户</DropdownItem>
+            <DropdownItem v-for="(menu,index) in item.submenu" :key="index">{{menu.name}}</DropdownItem>
           </DropdownMenu>
         </Dropdown>
       </template>
@@ -31,21 +23,21 @@
     <Layout :class="rightSider">
       <Header class="i-layout-header" :class="rightHeader">
         <i class="iconfont icon-collapsed" :class="rotateIcon" @click="collapsedSider"></i>
-        <i class="iconfont icon-htmal5icon23 icon-reload"></i>
+        <i class="iconfont icon-htmal5icon23 icon-reload" @click="reloadApp"></i>
         <Breadcrumb class="i-layout-header-breadcrumb">
           <BreadcrumbItem>首页</BreadcrumbItem>
           <BreadcrumbItem>{{curOpenName}}</BreadcrumbItem>
           <BreadcrumbItem>{{curMenuName}}</BreadcrumbItem>
         </Breadcrumb>
         <div class="i-layout-header-right">
-          <Dropdown>
+          <Dropdown @on-click="onClickUser">
             <a href="javascript:void(0)">
-              <Avatar style="color: #f56a00;background-color: #fde3cf">A</Avatar> Admin
+              <Avatar style="background:#C6E2FF" icon="ios-person"></Avatar> Admin
               <Icon type="ios-arrow-down"></Icon>
             </a>
             <DropdownMenu slot="list">
-              <DropdownItem>个人中心</DropdownItem>
-              <DropdownItem divided>退出登录</DropdownItem>
+              <DropdownItem name="userCenter">个人中心</DropdownItem>
+              <DropdownItem name="logout" divided>退出登录</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </div>
@@ -53,31 +45,16 @@
       <Content class="i-layout-content">
         <div class="i-layout-tabs-main">
           <div class="i-layout-tabs">
-            <Tabs type="card" closable >
-              <TabPane label="标签一"></TabPane>
-              <TabPane label="标签二"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
-              <TabPane label="标签三"></TabPane>
+            <Tabs type="card" :value="tagsActive" @on-click="onSelectTags" @on-tab-remove="onRemoveTags">
+              <TabPane :label="item.meta.title" :name="item.name" v-for="item in tagsList" :key="item.name" :closable="item.name!='console' ? true : false"></TabPane>
             </Tabs>
           </div>
           <div class="i-layout-tabs-close">
-            <Dropdown placement="bottom-end">
+            <Dropdown placement="bottom-end" @on-click="onSelectTagsTools">
               <a href="javascript:void(0)"><Icon type="ios-arrow-down"></Icon></a>
               <DropdownMenu slot="list">
-                <DropdownItem><Icon type="md-arrow-back"></Icon> 关闭左侧</DropdownItem>
-                <DropdownItem><Icon type="md-arrow-forward"></Icon> 关闭右侧</DropdownItem>
-                <DropdownItem><Icon type="md-close"></Icon> 关闭其他</DropdownItem>
-                <DropdownItem><Icon type="md-close-circle"></Icon> 关闭左侧</DropdownItem>
+                <DropdownItem name="other"><Icon type="md-close"></Icon> 关闭其他</DropdownItem>
+                <DropdownItem name="all"><Icon type="md-close-circle"></Icon> 关闭所有</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -147,20 +124,28 @@ export default {
           name: '用户管理', 
           icon: 'md-contacts',
           submenu: [ 
-            {name: '用户列表', path: ''},
-            {name: '新增用户', path: ''},
+            {name: '用户列表', path: '/dashboard/userList'},
+            {name: '新增用户', path: '/dashboard/userAdd'},
           ] 
         }
       ],
       curOpenName: this.$storage.getStorage('curOpenName') || 'Dashboard',
-      curMenuName: this.$storage.getStorage('curMenuName') || '主控台'
+      curMenuName: this.$storage.getStorage('curMenuName') || '主控台',
+      tagsList: this.$storage.getStorage('tagsList') || {console: {name: 'console', path: '/dashboard/console', meta: { title: '主控台'}}},
+      tagsActive: this.$storage.getStorage('tagsActive') || 'console'
     }
   },
   watch: {
     $route(newValue, oldValue) {
-      console.log(newValue)
-      console.log(oldValue)
-      // this.setTags(newValue)
+      let obj = {
+        name: newValue.name,
+        path: newValue.path,
+        meta: newValue.meta
+      }
+      this.tagsList[obj.name] = obj
+      this.tagsActive = obj.name
+      this.$storage.setStorage('tagsList', this.tagsList)
+      this.$storage.setStorage('tagsActive', this.tagsActive)
     }
   },
   computed: {
@@ -174,21 +159,84 @@ export default {
       return this.isCollapsed ? 'i-layout-header-fix-collapse' : 'i-layout-header-fix'
     }
   },
+  mounted() {
+    this.init()
+  },
   methods: {
-    collapsedSider () {
+    init() {
+      this.$storage.setStorage('tagsList', this.tagsList)
+    },
+    collapsedSider() {
       this.$refs.leftSider.toggleCollapse()
     },
     onSelectMenu(name) {
       this.curMenuName = name
       this.$storage.setStorage('curMenuName', name)
+      this.matchOpenName()
+    },
+    matchOpenName() {
       this.menuList.forEach((v,i) => {
         v.submenu.forEach((vv,ii) => {
-          if(vv.name == name){
+          if(vv.name == this.curMenuName){
             this.curOpenName = v.name
-            this.$storage.setStorage('curOpenName', v.name)
+            this.$storage.setStorage('curOpenName', this.curOpenName)
+            this.$nextTick(() =>{
+              this.$refs.leftMenu.updateOpened()
+            })
           }
         })
       })
+    },
+    onSelectTags(name) {
+      this.$router.push(this.tagsList[name].path)
+      this.curMenuName = this.tagsList[name].meta.title
+      this.$storage.setStorage('curMenuName', this.curMenuName)
+      this.matchOpenName()
+    },
+    onRemoveTags(name) {
+      let keys = Object.keys(this.tagsList)
+      let newName = ''
+      keys.map((key,i) => {
+        if(key == name){
+          newName = keys[i-1]
+        }
+      })
+      delete this.tagsList[name]
+      this.$storage.setStorage('tagsList', this.tagsList)
+      this.onSelectTags(newName)
+    },
+    onSelectTagsTools(name) {
+      let keys = Object.keys(this.tagsList)
+      switch(name) {
+        case 'other':
+          keys.map((key) => {
+            if(key != this.tagsActive && key != 'console'){
+              this.$delete(this.tagsList, key)
+            }
+          })
+          this.$storage.setStorage('tagsList', this.tagsList)
+          break
+        case 'all':
+          for(let key in this.tagsList){
+            if(key != 'console'){
+              this.$delete(this.tagsList, key)
+            }
+          }
+          this.$storage.setStorage('tagsList', this.tagsList)
+          this.onSelectTags('console')
+          break
+      }
+    },
+    onClickUser(name) {
+      switch(name) {
+        case 'logout':
+          this.$storage.clearAll()
+          this.$router.push('/login')
+          break
+      }
+    },
+    reloadApp() {
+      window.location.reload()
     }
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="workplace">
     workplace
   </div>
 </template>
@@ -16,5 +16,5 @@ export default {
 </script>
 
 <style scoped>
-
+.workplace{width:100%;height:100%;background:#fff;}
 </style>

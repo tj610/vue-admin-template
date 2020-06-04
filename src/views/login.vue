@@ -5,7 +5,7 @@
       <div class="login-desc">Admin 企业级前端/设计解决方案</div>
       <Form :model="loginForm">
         <FormItem>
-          <Input size="large" v-model="loginForm.username" placeholder="请输入用户名" >
+          <Input size="large" v-model="loginForm.cellphone" placeholder="请输入手机号" >
             <Icon type="ios-contact-outline" slot="prefix" />
           </Input>
         </FormItem>
@@ -15,7 +15,7 @@
           </Input>
         </FormItem>
         <FormItem>
-          <Button type="primary" size="large" long @click="$router.push('/dashboard')">登录</Button>
+          <Button type="primary" size="large" long @click="$router.push('/dashboard/console')">登录</Button>
         </FormItem>
       </Form>
     </div>
@@ -36,9 +36,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: 'admin',
-        password: '123456',
-        cellphone: '13261046866'
+        cellphone: '13261046866',
+        password: '123456'
       }
     }
   },

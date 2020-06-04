@@ -1,12 +1,12 @@
 <template>
-  <div class="console">
-    console
+  <div class="userAdd">
+    userAdd
   </div>
 </template>
 
 <script>
 export default {
-  name: 'console',
+  name: 'userAdd',
   data () {
     return {
       
@@ -16,5 +16,5 @@ export default {
 </script>
 
 <style scoped>
-.console{width:100%;height:100%;background:#fff;}
+.userAdd{width:100%;height:100%;background:#fff;}
 </style>
