@@ -24,7 +24,7 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(to => {
   ViewUI.LoadingBar.finish()
-  window.document.title = to.meta.title || router.app.$config.title
+  window.document.title = `${router.app.$config.title}-${to.meta.title}`
   window.scrollTo(0, 0)
 })
 
