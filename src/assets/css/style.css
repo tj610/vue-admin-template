@@ -17,6 +17,9 @@ input::-webkit-input-placeholder {color:#999;}
 html,body{height:100%;}
 img{width:100%;}
 
+::-webkit-scrollbar {width: 6px;height: 6px;background-color: transparent;}
+::-webkit-scrollbar-thumb {background-color: transparent;border-radius: 6px;}
+
 #app{height:100%;}
 
 .singlePage{width:100%;height:100%;overflow-y:scroll;background:#fff;}
